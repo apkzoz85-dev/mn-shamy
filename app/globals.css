@@ -17,41 +17,10 @@
   --font-latin: "Cormorant Garamond", serif;
 }
 
-/* ===== منع أي سكرول أفقي على الموبايل ===== */
-html,
-body {
-  max-width: 100%;
-  overflow-x: clip;
-}
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
-}
-img,
-svg,
-video,
-iframe {
-  max-width: 100%;
-}
-/* عناصر الجريد والفليكس متكسرش العرض بسبب محتوى طويل */
-.grid > *,
-.flex > * {
-  min-width: 0;
-}
-
-/* مساحة للبار السفلي على الموبايل + الآيفون الحديث */
-@media (max-width: 767px) {
-  body {
-    padding-bottom: calc(56px + env(safe-area-inset-bottom));
-  }
-}
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
+html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; }
 }
 .font-latin { font-family: var(--font-latin); }
 .font-body { font-family: var(--font-body); }
@@ -61,6 +30,18 @@ iframe {
 @keyframes glow { 0%,100%{opacity:.85} 50%{opacity:1} }
 .ann-pulse { animation: glow 2.6s ease-in-out infinite; }
 
-.reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
-.reveal.in-view { opacity: 1; transform: none; }
+.reveal { opacity:0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in-view { opacity:1; transform:none; }
 .hairline { border-color: rgba(20,32,28,.13); }
+
+/* ===== إصلاحات الموبايل ===== */
+html, body { max-width: 100%; overflow-x: clip; }
+html { -webkit-text-size-adjust: 100%; }
+img, svg, video, iframe { max-width: 100%; }
+/* عناصر الجريد والفليكس متكسرش عرض الشاشة بسبب محتوى طويل */
+.grid > *, .flex > * { min-width: 0; }
+/* مساحة للبار السفلي على الموبايل + الآيفون الحديث */
+@media (max-width: 767px) {
+  body { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
+}
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }

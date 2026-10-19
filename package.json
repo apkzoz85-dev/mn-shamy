@@ -1,6 +1,6 @@
 {
   "name": "madinetmasr",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,11 +13,11 @@
     "react-dom": "19.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "4.3.3",
-    "tailwindcss": "4.3.3",
-    "@types/node": "^22",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "typescript": "^5"
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.9.0"
   }
 }
