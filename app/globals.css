@@ -12,6 +12,10 @@
   --color-gold-2: #cfa95e;
   --color-ivory: #f8f5ed;
   --color-ivory-2: #ede6d6;
+  /* لون العرض — مطابق لكرييتف مدينة مصر */
+  --color-offer: #a3262a;
+  --color-offer-2: #c2333a;
+  --color-offer-soft: #f6e9e9;
 
   --font-body: "IBM Plex Sans Arabic", system-ui, sans-serif;
   --font-latin: "Cormorant Garamond", serif;

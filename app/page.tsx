@@ -5,15 +5,18 @@ import { useEffect, useRef, useState } from "react";
 /* ============================================================
    إعدادات أساسية — عدّل قبل الرفع
    ============================================================ */
-const PHONE = "01114555035";
-const PHONE_INTL = "+201114555035";
-const WA_NUM = "201114555035";
+const PHONE = "01001090433";
+const PHONE_INTL = "+201001090433";
+const WA_NUM = "201001090433";
 const waLink = (msg: string) =>
   `https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`;
 const WA_DEFAULT = waLink(
   "مرحباً، أريد الاستفسار عن أسعار مشاريع مدينة مصر (سراي / تاج سيتي / ذا باترفلاي)"
 );
-const WEB3FORMS_KEY = "bcd7a4b7-73cb-4f7a-865f-d29d7a500c44"; // TODO
+const WA_OFFER = waLink(
+  "مرحباً، أريد تفاصيل عرض مدينة مصر: سنة تقسيط إضافية + خصم إضافي (سراي / تاج سيتي)"
+);
+const WEB3FORMS_KEY = "e8adcb67-e7f1-467c-a0b0-4c50d4100987"; // TODO
 
 const CONV_FORM = "AW-XXXXXXXXXX/FORM_LABEL"; // TODO
 const CONV_WHATSAPP = "AW-XXXXXXXXXX/WA_LABEL"; // TODO
@@ -44,9 +47,32 @@ const COUNTRIES = [
    ============================================================ */
 const HERO_KPIS = [
   ["9M", "أسعار تبدأ من (جنيه)"],
-  ["5%", "مقدم حجز"],
-  ["10 سنوات", "تقسيط يصل إلى"],
+  ["13 سنة", "تقسيط سكني حتى"],
+  ["16 سنة", "تقسيط تجاري حتى"],
 ];
+
+/* ===== العرض الحالي — سنة تقسيط إضافية + خصم إضافي ===== */
+const OFFER = {
+  title: "سنة تقسيط إضافية + خصم إضافي",
+  sub: "عرض لفترة محدودة على مشروعات سراي وتاج سيتي",
+  blocks: [
+    {
+      name: "سراي",
+      en: "SARAI",
+      items: [
+        ["سكني", "9 – 13", "سنة تقسيط"],
+        ["تجاري · حتى", "16", "سنة تقسيط"],
+      ],
+      phases: ["Rai", "Rai Valleys", "Sheya Residence", "esse residence", "Club Views", "ELM TREE PARK", "D2N"],
+    },
+    {
+      name: "تاج سيتي",
+      en: "TAJ CITY",
+      items: [["سكني", "8 – 13", "سنة تقسيط"]],
+      phases: ["Origami Gardens", "Origami Golf", "Ville Avenue"],
+    },
+  ],
+};
 
 const DEV_BADGES = [
   "تأسست 1959 بقرار جمهوري",
@@ -74,13 +100,14 @@ const PROJECTS = [
     en: "Sarai New Cairo",
     accent: "text-emerald",
     badge: "أكبر لاجون سباحة في القاهرة",
+    offer: "عرض: تقسيط سكني 9–13 سنة · تجاري حتى 16 سنة + خصم إضافي",
     badgeTone: "bg-emerald text-white",
     desc: "كمبوند سراي أضخم مشروعات مدينة مصر على مساحة 5.5 مليون متر مربع (نحو 1,000 فدان) على طريق السويس ومحور الأمل، بجوار مدينتي وعلى بُعد دقائق من الجامعة الأمريكية والطريق الدائري. الميزة الأبرز بحيرة صناعية بمساحة 50,000 متر مربع تضم أكبر لاجون سباحة في القاهرة (10,000 م² بعمق 1.4 متر)، مع تخصيص 18% فقط للمباني و82% للمساحات الخضراء والمسطحات المائية. ويضم سراي المستقبل سيتي شقق وفيلات للبيع بأنظمة تقسيط طويلة.",
     facts: [
       ["5.5M م²", "المساحة الإجمالية"],
       ["82%", "مساحات خضراء ومائية"],
       ["50 ألف م²", "مساحة البحيرة الصناعية"],
-      ["10 سنوات", "أنظمة سداد تصل إلى"],
+      ["13 سنة", "تقسيط سكني حتى (عرض)"],
     ],
     rows: [
       ["أسعار شقق سراي", "من حوالي 9,000,000 جنيه"],
@@ -103,6 +130,7 @@ const PROJECTS = [
     en: "Taj City",
     accent: "text-gold",
     badge: "وحدات استلام فوري",
+    offer: "عرض: تقسيط 8–13 سنة + خصم إضافي",
     badgeTone: "bg-gold text-white",
     desc: "المدينة الملكية — أضخم مشروع متعدد الاستخدامات لمدينة مصر على نحو 900 فدان (أكثر من 3.5 مليون م²) على طريق السويس والدائري، أمام فندق JW Marriott وعلى بُعد 5 دقائق فقط من مطار القاهرة الدولي و20 دقيقة من وسط البلد. أُطلق عام 2012 وبه مراحل مُسلَّمة ومأهولة بالفعل ووحدات استلام فوري.",
     facts: [
@@ -131,6 +159,7 @@ const PROJECTS = [
     en: "The Butterfly",
     accent: "text-emerald-2",
     badge: "أحدث المشروعات",
+    offer: "",
     badgeTone: "bg-royal text-white",
     desc: "أحدث مشروعات مدينة مصر على 238 فدانًا في مدينة المستقبل، بواجهة مباشرة على محور الأمل وبجوار كمبوند سراي مباشرة. يضم وحدات متنوعة بين شقق ودوبلكس وتاون هاوس وفيلات، محاطة بمساحات خضراء واسعة وبحيرات صناعية.",
     facts: [
@@ -253,7 +282,7 @@ const FAQS = [
   },
   {
     q: "ما هو نظام السداد في مشاريع مدينة مصر؟",
-    a: "النظام الأساسي هو مقدم يبدأ من 5% وتقسيط يصل إلى 10 سنوات على أقساط متساوية. وتطرح الشركة في مراحل بعينها أنظمة بدون مقدم مع تقسيط حتى 10 سنوات، بالإضافة إلى خصومات مرتفعة عند السداد النقدي. تختلف التفاصيل حسب المشروع والمرحلة المطروحة وقت الحجز.",
+    a: "حاليًا ولفترة محدودة تقدم مدينة مصر سنة تقسيط إضافية وخصمًا إضافيًا: في سراي تقسيط من 9 إلى 13 سنة للوحدات السكنية وحتى 16 سنة للتجاري، وفي تاج سيتي من 8 إلى 13 سنة. وتطرح الشركة في مراحل بعينها أنظمة بدون مقدم مع تقسيط حتى 10 سنوات، بالإضافة إلى خصومات مرتفعة عند السداد النقدي. تختلف التفاصيل حسب المشروع والمرحلة المطروحة وقت الحجز.",
   },
   {
     q: "أنهي مشروع أنسب: سراي ولا تاج سيتي ولا ذا باترفلاي؟",
@@ -350,21 +379,23 @@ export default function Page() {
 
       {/* ============ Announcement ============ */}
       {annOpen && (
-        <div className="fixed top-0 inset-x-0 z-50 h-9 bg-gold text-white flex items-center justify-center px-9">
+        <>
+        <a href="#offer" className="fixed top-0 inset-x-0 z-50 h-9 bg-offer text-white flex items-center justify-center px-9">
           <span className="ann-pulse font-semibold text-[12px] sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis">
-            <span className="sm:hidden">أسعار من 9 مليون · مقدم 5% · تقسيط 10 سنين</span>
+            <span className="sm:hidden">عرض: سنة تقسيط إضافية + خصم إضافي ←</span>
             <span className="hidden sm:inline">
-              مشاريع مدينة مصر — أسعار تبدأ من 9 مليون · مقدم 5% وتقسيط حتى 10 سنوات · وحدات استلام فوري
+              عرض لفترة محدودة — سنة تقسيط إضافية + خصم إضافي · تقسيط حتى 13 سنة سكني و16 سنة تجاري ←
             </span>
           </span>
-          <button
-            aria-label="إغلاق الشريط"
-            onClick={() => setAnnOpen(false)}
-            className="absolute top-1/2 -translate-y-1/2 left-2 w-7 h-7 grid place-items-center text-white/75 hover:text-white text-base leading-none"
-          >
-            ✕
-          </button>
-        </div>
+        </a>
+        <button
+          aria-label="إغلاق الشريط"
+          onClick={() => setAnnOpen(false)}
+          className="fixed top-1 left-2 z-50 w-7 h-7 grid place-items-center text-white/75 hover:text-white text-base leading-none"
+        >
+          ✕
+        </button>
+        </>
       )}
 
       {/* ============ Header ============ */}
@@ -384,6 +415,7 @@ export default function Page() {
             </span>
           </a>
           <nav className="hidden lg:flex items-center gap-5 text-sm text-white/80">
+            <a href="#offer" className="font-bold text-white bg-offer rounded-full px-3 py-1 hover:bg-offer-2 transition-colors">العرض</a>
             <a href="#sarai" className="hover:text-gold-2 transition-colors">سراي</a>
             <a href="#tajcity" className="hover:text-gold-2 transition-colors">تاج سيتي</a>
             <a href="#butterfly" className="hover:text-gold-2 transition-colors">ذا باترفلاي</a>
@@ -423,6 +455,7 @@ export default function Page() {
         {menuOpen && (
           <nav className="lg:hidden bg-ink border-t border-white/10 px-4 py-2 flex flex-col text-white/90">
             {[
+              ["offer", "🔥 العرض الحالي"],
               ["sarai", "سراي"],
               ["tajcity", "تاج سيتي"],
               ["butterfly", "ذا باترفلاي"],
@@ -451,9 +484,16 @@ export default function Page() {
       >
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 lg:grid-cols-[1.12fr_1fr] gap-8 lg:gap-10 items-start">
           <div className="text-white pt-2">
-            <p className="inline-block rounded-full border border-gold/60 bg-gold/15 px-3.5 py-1.5 text-xs sm:text-sm text-gold-2 mb-5">
+            <p className="inline-block rounded-full border border-gold/60 bg-gold/15 px-3.5 py-1.5 text-xs sm:text-sm text-gold-2 mb-3">
               مدينة مصر للإسكان والتعمير — منذ 1959
             </p>
+            <a
+              href="#offer"
+              className="flex w-fit items-center gap-2 rounded-xl bg-offer px-3.5 py-2 text-[13px] sm:text-sm font-bold text-white shadow-lg mb-5 hover:bg-offer-2 transition-colors"
+            >
+              <span className="rounded-md bg-white text-offer px-1.5 py-0.5 text-[11px]">عرض جديد</span>
+              سنة تقسيط إضافية + خصم إضافي ←
+            </a>
             <h1 className="text-[26px] sm:text-4xl lg:text-5xl font-extrabold leading-[1.35] mb-4">
               مشاريع مدينة مصر 2026
               <span className="block mt-2 text-gold-2 text-lg sm:text-3xl font-semibold">
@@ -465,7 +505,8 @@ export default function Page() {
               بالبورصة المصرية — من بحيرة كمبوند سراي القابلة للسباحة، إلى تاج سيتي على
               بُعد 5 دقائق من مطار القاهرة، إلى ذا باترفلاي بمدينة المستقبل.
               كلها في القاهرة الجديدة ومدينة المستقبل، بأسعار تبدأ من 9
-              مليون جنيه ومقدم 5% وتقسيط حتى 10 سنوات.
+              مليون جنيه — ولفترة محدودة: سنة تقسيط إضافية وخصم إضافي، بتقسيط
+              حتى 13 سنة للسكني و16 سنة للتجاري.
             </p>
 
             <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-7 max-w-lg">
@@ -505,14 +546,102 @@ export default function Page() {
 
           <div id="lead" className="scroll-mt-28">
             <div className="rounded-2xl bg-white shadow-2xl p-5 sm:p-7">
+              <OfferStrip />
               <h2 className="text-lg sm:text-xl font-bold text-ink mb-1.5 leading-snug">
-                سجل اهتمامك واستلم البروشور وقائمة الأسعار
+                احجز العرض واستلم البروشور وقائمة الأسعار
               </h2>
               <p className="text-sm text-ink/55 mb-5 leading-relaxed">
                 سيتواصل معك مستشار عقاري ويساعدك تختار بين سراي وتاج سيتي وذا
                 باترفلاي حسب ميزانيتك
               </p>
               <LeadForm formLocation="hero" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ OFFER ============ */}
+      <section id="offer" className="py-12 md:py-20 bg-white scroll-mt-24">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="text-center mb-8 md:mb-10 reveal">
+            <span className="inline-block rounded-full bg-offer text-white px-4 py-1.5 text-xs sm:text-sm font-bold mb-3">
+              عرض لفترة محدودة
+            </span>
+            <h2 className="text-[24px] md:text-4xl font-extrabold text-ink leading-snug">
+              {OFFER.title.split("+")[0]}
+              <span className="text-offer">+{OFFER.title.split("+")[1]}</span>
+            </h2>
+            <p className="text-ink/60 text-[15px] sm:text-base mt-2">{OFFER.sub}</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.05fr] gap-8 lg:gap-12 items-center">
+            {/* صورة العرض */}
+            <a href="#lead" className="reveal block mx-auto w-full max-w-[460px]">
+              <img
+                src="/images/offer.webp"
+                alt="عرض مدينة مصر — سنة تقسيط إضافية وخصم إضافي: سراي سكني 9-13 سنة وتجاري حتى 16 سنة، تاج سيتي 8-13 سنة"
+                width={929}
+                height={1280}
+                className="w-full h-auto rounded-2xl shadow-2xl ring-1 ring-black/5"
+              />
+            </a>
+
+            {/* تفاصيل العرض */}
+            <div className="reveal space-y-5">
+              {OFFER.blocks.map((b) => (
+                <div key={b.en} className="rounded-2xl border border-offer/15 bg-offer-soft/60 p-5 sm:p-6">
+                  <div className="flex items-baseline justify-between gap-3 mb-4">
+                    <h3 className="text-xl sm:text-2xl font-extrabold text-offer">{b.name}</h3>
+                    <span className="font-bold tracking-widest text-offer/50 text-xs sm:text-sm">{b.en}</span>
+                  </div>
+                  <div className={`grid gap-3 ${b.items.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+                    {b.items.map(([k, v, u]) => (
+                      <div key={k} className="rounded-xl bg-white p-3.5 sm:p-4 text-center shadow-sm">
+                        <div className="text-xs sm:text-sm font-semibold text-ink/55">{k}</div>
+                        <div className="text-3xl sm:text-4xl font-black text-offer leading-tight my-1" dir="ltr">
+                          {v}
+                        </div>
+                        <div className="text-xs sm:text-sm font-bold text-ink">{u}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 mt-4" dir="ltr">
+                    {b.phases.map((ph) => (
+                      <span key={ph} className="rounded-full bg-white border border-offer/15 px-2.5 py-1 text-[12px] font-semibold text-ink/75">
+                        {ph}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                <a
+                  href="#lead"
+                  className="text-center rounded-xl bg-offer py-3.5 font-bold text-white hover:bg-offer-2 transition-colors"
+                >
+                  احجز العرض الآن
+                </a>
+                <a
+                  href={WA_OFFER}
+                  target="_blank"
+                  rel="noopener"
+                  onClick={trackWA}
+                  className="text-center rounded-xl bg-[#25D366] py-3.5 font-bold text-white"
+                >
+                  تفاصيل العرض واتساب
+                </a>
+                <a
+                  href={`tel:${PHONE_INTL}`}
+                  onClick={trackCall}
+                  className="text-center rounded-xl border-2 border-ink py-3 font-bold text-ink hover:bg-ink hover:text-white transition-colors"
+                >
+                  اتصل: <span dir="ltr">{PHONE}</span>
+                </a>
+              </div>
+              <p className="text-[11px] text-ink/45 leading-relaxed">
+                * العرض لفترة محدودة ويخضع لشروط الشركة المطورة وتوافر الوحدات وقت الحجز.
+              </p>
             </div>
           </div>
         </div>
@@ -579,6 +708,15 @@ export default function Page() {
                   {p.en}
                 </span>
               </div>
+              {p.offer && (
+                <a
+                  href="#offer"
+                  className="mt-4 flex items-center justify-between gap-3 rounded-xl bg-offer px-4 py-3 text-white text-sm sm:text-[15px] font-bold hover:bg-offer-2 transition-colors"
+                >
+                  <span>{p.offer}</span>
+                  <span className="shrink-0 rounded-md bg-white/15 px-2 py-0.5 text-xs">التفاصيل ←</span>
+                </a>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-start">
@@ -946,6 +1084,12 @@ export default function Page() {
               تحدث عبر واتساب
             </a>
             <a
+              href="#offer"
+              className="rounded-full bg-offer px-7 py-3.5 font-bold text-white hover:bg-offer-2 transition-colors"
+            >
+              شوف العرض الحالي
+            </a>
+            <a
               href="#lead"
               className="rounded-full border border-white/50 px-7 py-3.5 font-bold hover:bg-white/10 transition-colors"
             >
@@ -1018,8 +1162,8 @@ export default function Page() {
           >
             واتساب
           </a>
-          <a href="#lead" className="flex items-center justify-center font-semibold bg-gold">
-            الأسعار
+          <a href="#lead" className="flex items-center justify-center font-semibold bg-offer">
+            احجز العرض
           </a>
         </div>
       </div>
@@ -1041,16 +1185,30 @@ export default function Page() {
             >
               ✕
             </button>
-            <span className="inline-block rounded-full bg-gold/20 text-gold px-3 py-1 text-xs font-semibold mb-3">
-              أسعار من 9 مليون · مقدم 5%
+            <span className="inline-block rounded-full bg-offer text-white px-3 py-1 text-xs font-bold mb-3">
+              عرض لفترة محدودة
             </span>
-            <h3 className="text-xl font-bold text-ink mb-1.5">
-              برايس ليست مشاريع مدينة مصر 2026
+            <h3 className="text-xl font-bold text-ink mb-1.5 leading-snug">
+              سنة تقسيط إضافية <span className="text-offer">+ خصم إضافي</span>
             </h3>
-            <p className="text-sm text-ink/55 mb-5">
-              سراي · تاج سيتي · ذا باترفلاي — تصلك على واتساب
+            <p className="text-sm text-ink/55 mb-4">
+              تفاصيل العرض وقائمة الأسعار تصلك على واتساب
             </p>
+            <img
+              src="/images/offer.webp"
+              alt="عرض مدينة مصر — سنة تقسيط إضافية وخصم إضافي"
+              className="w-full h-44 sm:h-52 object-cover object-top rounded-xl mb-4 ring-1 ring-black/5"
+            />
             <LeadForm formLocation="popup" compact />
+            <a
+              href={WA_OFFER}
+              target="_blank"
+              rel="noopener"
+              onClick={trackWA}
+              className="mt-3 block text-center rounded-xl border-2 border-[#25D366] text-[#128C4B] py-2.5 font-bold"
+            >
+              أو اسأل عن العرض على واتساب
+            </a>
           </div>
         </div>
       )}
@@ -1123,6 +1281,7 @@ function LeadForm({
           phone: `${dial}${local}`,
           country: country.n,
           project: fd.get("project") || "—",
+          offer: "سنة تقسيط إضافية + خصم إضافي",
           source: formLocation,
           page: "madinet-masr-projects",
         }),
@@ -1213,8 +1372,9 @@ function LeadForm({
           <option value="" disabled>
             المشروع المطلوب
           </option>
-          <option>كمبوند سراي</option>
-          <option>كمبوند تاج سيتي</option>
+          <option>سراي — عرض سكني (9–13 سنة)</option>
+          <option>سراي — عرض تجاري (حتى 16 سنة)</option>
+          <option>تاج سيتي — عرض (8–13 سنة)</option>
           <option>كمبوند ذا باترفلاي</option>
           <option>مش عارف — عايز مساعدة في الاختيار</option>
         </select>
@@ -1225,9 +1385,9 @@ function LeadForm({
       <button
         type="submit"
         disabled={sending}
-        className="w-full rounded-xl bg-gold py-3.5 font-bold text-white hover:bg-gold-2 transition-colors disabled:opacity-60"
+        className="w-full rounded-xl bg-offer py-3.5 font-bold text-white hover:bg-offer-2 transition-colors disabled:opacity-60"
       >
-        {sending ? "جاري الإرسال..." : "احجز وحدتك الآن"}
+        {sending ? "جاري الإرسال..." : "احجز العرض الآن"}
       </button>
 
       <p className="text-[11px] text-ink/45 text-center leading-relaxed">
@@ -1236,5 +1396,29 @@ function LeadForm({
         تُستخدم فقط للتواصل بخصوص استفسارك العقاري.
       </p>
     </form>
+  );
+}
+
+/* ============================================================
+   شريط العرض داخل فورم التسجيل
+   ============================================================ */
+function OfferStrip() {
+  return (
+    <a
+      href="#offer"
+      className="-mx-5 sm:-mx-7 -mt-5 sm:-mt-7 mb-5 block rounded-t-2xl bg-offer px-5 sm:px-7 py-3.5 text-white"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-[15px] sm:text-base font-extrabold leading-snug">
+          سنة تقسيط إضافية + خصم إضافي
+        </span>
+        <span className="shrink-0 rounded-md bg-white text-offer px-2 py-0.5 text-[11px] font-bold">
+          لفترة محدودة
+        </span>
+      </div>
+      <div className="mt-1.5 text-[12px] sm:text-[13px] text-white/85">
+        سراي: سكني 9–13 سنة · تجاري حتى 16 سنة — تاج سيتي: 8–13 سنة
+      </div>
+    </a>
   );
 }
