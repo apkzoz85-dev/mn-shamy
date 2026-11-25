@@ -13,9 +13,12 @@ const waLink = (msg: string) =>
 const WA_DEFAULT = waLink(
   "مرحباً، أريد الاستفسار عن أسعار مشاريع مدينة مصر (سراي / تاج سيتي / ذا باترفلاي)"
 );
+<<<<<<< HEAD
 const WA_OFFER = waLink(
   "مرحباً، أريد تفاصيل عرض مدينة مصر: سنة تقسيط إضافية + خصم إضافي (سراي / تاج سيتي)"
 );
+=======
+>>>>>>> 7422f1f211b043397e230832b77ed09c039dafb3
 const WEB3FORMS_KEY = "e8adcb67-e7f1-467c-a0b0-4c50d4100987"; // TODO
 
 const CONV_FORM = "AW-XXXXXXXXXX/FORM_LABEL"; // TODO
